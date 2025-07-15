@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "huddle-up",
+    "slug": "huddle-up",
+    "version": "1.0.0",
+    "android": {
+      "googleServicesFile": "src/firebase/google-services.json",
+      "package": "com.huddleup"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b1aa92c6-cfb5-47d7-85fe-77acdd597eb4"
+      }
+    },
+    "splash": {
+      "image": "./src/assets/backGround.png",
+      "backgroundColor": "#ffffff"
+    },
+    "owner": "lyyon"
+  }
+}
