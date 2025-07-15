@@ -15,9 +15,6 @@ OR you can download the ready made APK from the link below
 https://expo.dev/artifacts/eas/t3GEkA4xBpv4jKvcztfSwY.apk
 Or Find the huddle-up.apk file in the root directory
 
-- Admin User
-  admin@gmail.com
-  password: admin123
 - Test User
   hamza@gmail.com
   password: 123456
