@@ -1,4 +1,4 @@
-import { uploadFileFromUrl } from "../minio/usage";
+import { uploadFileFromUrl } from "../storage/usage";
 import { db } from "./firebaseConfig";
 import {
   arrayRemove,
@@ -29,7 +29,7 @@ export const addEvent = async (eventData) => {
       eventData.picture_url ??
       "https://assets.almasood.org/huddle-up/default.jpg",
       eventRef.id,
-      "events"
+      `events/${eventData.uid}`
     );
 
     await setDoc(eventRef, eventWithDefaults);

@@ -1,22 +1,28 @@
-pre requisites :-
+# HuddleUp mobile app
 
-- Node v20.10.0
-- npm v10.2.5
+This directory contains the Expo / React Native Android-first application. It uses Firebase Authentication, Cloud Firestore, and Cloud Storage; a separate Flask service provides CPR image OCR.
 
-Run:-
+## Requirements
 
-- `npm install`
-- `npm start`
-  it will run expo to start the application on mobile download expo go app and follow the instruction in the terminal!
-  NOTE: this app is developed taking in mind for android devices only, it may crashes on IOS devices!
+- Node.js 20 or newer
+- npm
+- Android Studio and an Android SDK for a local development build
+- A Firebase project configured for the app
 
-OR you can download the ready made APK from the link below
+React Native Firebase requires native modules, so use a development build rather than Expo Go.
 
-https://expo.dev/artifacts/eas/t3GEkA4xBpv4jKvcztfSwY.apk
-Or Find the huddle-up.apk file in the root directory
+## Setup
 
-- Test User
-  hamza@gmail.com
-  password: 123456
-  mohamed@gmail.com
-  password: 123456
+1. Configure the Firebase project in `src/firebase/firebaseConfig.js`.
+2. Add the matching `google-services.json` at `src/firebase/google-services.json`.
+3. Deploy `storage.rules` to Firebase Storage.
+4. Install dependencies and run the Android app:
+
+```sh
+npm install
+npm run android
+```
+
+For an existing development build, start the Metro server with `npm start`.
+
+The app's image uploads use Firebase Storage. CPR images are stored as private object paths and fetched only by the owner or an administrator. Review and deploy the Storage rules before using personal data. See the [repository README](../README.md) for OCR service setup, tests, security notes, and known limitations.

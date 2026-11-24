@@ -17,7 +17,7 @@ import calculateAge from "../helpers/calculateAge";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Background from "../components/Background";
 import * as ImagePicker from "expo-image-picker";
-import { uploadFile } from "../minio/usage";
+import { uploadFile } from "../storage/usage";
 import {
   acceptFriendReq,
   getUser,

@@ -9,6 +9,6 @@ export const theme = {
     secondary: "#414757",
     error: "#f13a59",
     secondaryContainer: "rgba(3, 4, 94, 0.1)",
-    background: "007BFF",
+    background: "#FFFFFF",
   },
 };
