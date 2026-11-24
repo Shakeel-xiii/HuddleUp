@@ -76,12 +76,12 @@ export default function CreateEvent({ navigation }) {
 
       const errorGender = gender == "Select Gender" || !gender ? true : false;
       if (
-        nameError |
-        durationError |
-        walinkError |
-        errorLocation |
-        errorType |
-        errorAgeRange |
+        nameError ||
+        durationError ||
+        walinkError ||
+        errorLocation ||
+        errorType ||
+        errorAgeRange ||
         errorGender
       ) {
         setName({ ...name, error: nameError });
@@ -260,11 +260,10 @@ export default function CreateEvent({ navigation }) {
                     color: isPrivate ? "white" : theme.colors.primary,
                   }}
                 >
-                  Only Freinds
+                  Only Friends
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                TouchableOpacity
                 activeOpacity={1}
                 onPress={() => updatedSwitchData(2)}
                 style={{

@@ -1,0 +1,9 @@
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/.pytest_cache/
+
+# Expo / React Native
+huddle-up/node_modules/
+huddle-up/.expo/

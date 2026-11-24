@@ -27,7 +27,7 @@ import Menu from "../components/DropDown";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../core/AuthContext";
 import { Locations, Category } from "../helpers/constData";
-import { uploadFileFromUrl } from "../minio/usage";
+import { uploadFileFromUrl } from "../storage/usage";
 import { updateUser } from "../firebase/firestoreUsage";
 const requestPermissions = async () => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();

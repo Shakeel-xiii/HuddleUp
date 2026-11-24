@@ -15,6 +15,7 @@ import { getUser, updateUser } from '../firebase/firestoreUsage';
 import { Portal, Dialog, Paragraph } from 'react-native-paper';
 import Button from '../components/Button';
 import BackButton from '../components/BackButton';
+import { getPrivateImageDataUrl } from '../storage/usage';
 const { width } = Dimensions.get('window');
 
 const UserDetailsScreen = () => {
@@ -25,6 +26,7 @@ const UserDetailsScreen = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showRoleDialog, setShowRoleDialog] = useState(false);
+    const [cprImage, setCprImage] = useState(null);
 
     useEffect(() => {
         if (!uid) {
@@ -33,6 +35,23 @@ const UserDetailsScreen = () => {
         }
         fetchUserDetails();
     }, [uid]);
+
+    useEffect(() => {
+        let isCurrent = true;
+        setCprImage(null);
+        if (user?.cprPic) {
+            getPrivateImageDataUrl(user.cprPic)
+                .then((image) => {
+                    if (isCurrent) setCprImage(image);
+                })
+                .catch((error) => {
+                    console.error("Failed to load private CPR image:", error);
+                });
+        }
+        return () => {
+            isCurrent = false;
+        };
+    }, [user?.cprPic]);
 
     const fetchUserDetails = async () => {
         try {
@@ -162,10 +181,10 @@ const UserDetailsScreen = () => {
                     <Text style={styles.info}>Location: {user.location || 'N/A'}</Text>
 
 
-                    {user.cprPic && (
+                    {cprImage && (
                         <View style={styles.cprContainer}>
                             <Text style={styles.cprTitle}>CPR Image (for Admin verification):</Text>
-                            <Image source={{ uri: user.cprPic }} style={styles.cprImage} resizeMode="contain" />
+                            <Image source={{ uri: cprImage }} style={styles.cprImage} resizeMode="contain" />
                         </View>
                     )}
 

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { Text } from "react-native-paper";
 import Background from "../components/Background";
@@ -27,7 +28,11 @@ import Menu from "../components/DropDown";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../core/AuthContext";
 import { Locations, Category } from "../helpers/constData";
-import { uploadFile, uploadFileFromUrl } from "../minio/usage";
+import {
+  uploadFile,
+  uploadFileFromUrl,
+  uploadPrivateFile,
+} from "../storage/usage";
 import { createUser } from "../firebase/firebaseAuth";
 import { addUser, getUserRole } from "../firebase/firestoreUsage";
 const requestPermissions = async () => {
@@ -201,7 +206,7 @@ export default function RegisterScreen({ navigation }) {
         setEmail({ ...email, error: "Email already exists" });
         return;
       }
-      const cprUrl = await uploadFile(CPRimageUri.data, "cpr", uid);
+      const cprUrl = await uploadPrivateFile(CPRimageUri.data, "cpr", uid);
       // navigation.reset({
       //   index: 0,
       //   routes: [{ name: "LoginScreen" }],
@@ -251,21 +256,19 @@ export default function RegisterScreen({ navigation }) {
     }
   };
   const CPRpickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: false,
-      mediaTypes: ImagePicker.MediaType,
-      // allowsEditing: true,
-      // aspect: [4, 3],
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsMultipleSelection: false,
+        mediaTypes: ImagePicker.MediaType,
+        quality: 0.5,
+        base64: true,
+        legacy: true,
+      });
 
-      quality: 0.5,
-      base64: true,
-      legacy: true,
-    });
-    // console.log(result);
-
-    if (!result.canceled) {
+      if (result.canceled) return;
       setVerifying(true);
-      fetch("https://assets.almasood.org/v3/verification/cpr", {
+      setCPRtext(null);
+      const response = await fetch("https://assets.almasood.org/v3/verification/cpr", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -274,46 +277,29 @@ export default function RegisterScreen({ navigation }) {
         body: JSON.stringify({
           base64: result.assets[0].base64,
         }),
-      })
-        .then(function (a) {
-          if (!a.ok) {
-            return console.error(
-              "Network response was not ok: " + a.statusText
-            );
-          }
-          return a.json(); // call the json method on the response to get JSON
-        })
-        .then(function (json) {
-          if (!json.text) {
-            CPRsetImageUri({
-              data: null,
-              error: "red",
-            });
-            return;
-          }
-          const text = json.text;
-          console.log(
-            "Name: " + text.includes(name.value.split(" ")[0].toUpperCase())
-          );
-          console.log(
-            "CPR: " + text.includes(cpr.value || cpr.value.slice(1, 9))
-          );
+      });
+      if (!response.ok) {
+        throw new Error(`CPR verification failed (HTTP ${response.status}).`);
+      }
 
-          if (
-            text.includes(name.value.split(" ")[0].toUpperCase()) &&
-            text.includes(cpr.value || cpr.value.slice(1, 9))
-          ) {
-            setCPRtext(text);
-            CPRsetImageUri({ data: result.assets[0], error: "green" });
-          } else {
-            CPRsetImageUri({
-              data: null,
-              error: "red",
-            });
-          }
-          console.log(text);
-          setVerifying(false);
-        });
+      const { text } = await response.json();
+      const isVerified =
+        typeof text === "string" &&
+        text.includes(name.value.split(" ")[0].toUpperCase()) &&
+        text.includes(cpr.value);
+
+      if (isVerified) {
+        setCPRtext(text);
+        CPRsetImageUri({ data: result.assets[0], error: "green" });
+      } else {
+        CPRsetImageUri({ data: null, error: "red" });
+      }
+    } catch (error) {
+      console.error("CPR verification request failed:", error);
+      CPRsetImageUri({ data: null, error: "red" });
+      Alert.alert("Verification failed", "Please try again with a clear image.");
+    } finally {
+      setVerifying(false);
     }
   };
   const UserpickImage = async () => {
