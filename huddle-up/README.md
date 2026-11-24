@@ -1,28 +1,16 @@
 # HuddleUp mobile app
 
-This directory contains the Expo / React Native Android-first application. It uses Firebase Authentication, Cloud Firestore, and Cloud Storage; a separate Flask service provides CPR image OCR.
+This folder contains the Android-first Expo and React Native app. It uses Firebase Authentication, Cloud Firestore, and Cloud Storage. Firebase's native modules require a development build, so Expo Go is not supported.
 
-## Requirements
+To run the app locally, install Node.js 20.10 or later, npm, Android Studio, and the Android SDK. Set up a Firebase project, update `src/firebase/firebaseConfig.js`, and place its `google-services.json` file in `src/firebase/`. Publish the rules in `storage.rules` to Firebase Storage so image uploads have the intended access controls.
 
-- Node.js 20 or newer
-- npm
-- Android Studio and an Android SDK for a local development build
-- A Firebase project configured for the app
-
-React Native Firebase requires native modules, so use a development build rather than Expo Go.
-
-## Setup
-
-1. Configure the Firebase project in `src/firebase/firebaseConfig.js`.
-2. Add the matching `google-services.json` at `src/firebase/google-services.json`.
-3. Deploy `storage.rules` to Firebase Storage.
-4. Install dependencies and run the Android app:
+From this folder, install the dependencies and build the Android app:
 
 ```sh
 npm install
 npm run android
 ```
 
-For an existing development build, start the Metro server with `npm start`.
+When a development build is already installed, `npm start` starts Metro without rebuilding the app. Run `npm test` to check the mobile form helpers; that command uses Node's built-in test runner and needs Node.js 22.7 or later.
 
-The app's image uploads use Firebase Storage. CPR images are stored as private object paths and fetched only by the owner or an administrator. Review and deploy the Storage rules before using personal data. See the [repository README](../README.md) for OCR service setup, tests, security notes, and known limitations.
+The CPR verification endpoint is configured in `src/screens/RegisterScreen.js`. The OCR service setup and its tests are described in the [repository README](../README.md).
